@@ -16,3 +16,12 @@ SELECT * FROM `product_cat` order by id DESC LIMIT 2, 1;
 
 display from 5th to 8th records:
 select id from `product_cat` limit 4 offset 4;
+
+
+insert into products:
+
+insert into products(product_cat_id,product,short_code) values(1,"Iphone","IP");
+insert into products(product_cat_id,product,short_code) values(1,"Samsung","SS");
+insert into products(product_cat_id,product,short_code) values(1,"Oppo","OP");
+insert into products(product_cat_id,product,short_code) values(1,"Oneplus","OS");
+insert into products(product_cat_id,product,short_code) values(1,"Vivo","VV");
