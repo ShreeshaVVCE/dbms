@@ -1,4 +1,9 @@
-
+CREATE TABLE product_cat(
+id int NOT NULL AUTO_INCREMENT,
+product_cat varchar(255) NOT NULL,
+short_code varchar(20) NOT NULL,
+PRIMARY KEY(id)
+);
 
 create table products( 
 id int not null AUTO_INCREMENT, 
