@@ -14,8 +14,11 @@ PRIMARY KEY(id),
 FOREIGN KEY(product_cat_id) REFERENCES product_cat(id) 
 );
 
-alter table product_cat
+alter table products
 add description text;
 
-alter table product_cat
+alter table products
 MODIFY description varchar(255);
+
+alter table products
+drop description;
