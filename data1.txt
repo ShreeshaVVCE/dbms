@@ -7,3 +7,7 @@ insert into product_cat( product_cat, short_code)
 insert into product_cat( product_cat, short_code)
   values("Smart Watch","SW");
 
+
+display last but one inserted ID from the product_cat table:
+
+SELECT * FROM `product_cat` order by id DESC LIMIT 1, 1;
