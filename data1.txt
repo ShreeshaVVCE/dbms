@@ -1,0 +1,9 @@
+insert into product_cat( product_cat, short_code)
+  values("Smart Phones","SP");
+
+insert into product_cat( product_cat, short_code)
+  values("Laptops","LP");
+
+insert into product_cat( product_cat, short_code)
+  values("Smart Watch","SW");
+
