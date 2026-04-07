@@ -1,3 +1,6 @@
+queries-day2
+
+
 ===  display products along with their category name ====
 
 select products.product , product_cat.product_cat from products INNER JOIN product_cat ON products.product_cat_id = product_cat.id;
@@ -169,4 +172,60 @@ select sum(sales.order_qty * sales.order_price) as total_iphone_sales
 from products inner join sales
 on products.id = sales.product_id
 where products.product = 'IPhone' and (sales.order_date BETWEEN '2025-03-01' and '2025-03-31') or (sales.order_date BETWEEN '2026-03-01' and '2026-03-31');
+
+
+
+
+============== DISPLAY TOTAL QUANTITY SOLD PER CITY ===============
+
+SELECT CUSTOMERS.customer_city , SUM(SALES.order_qty) AS TOTAL_QTY
+FROM CUSTOMERS INNER JOIN sales
+on customers.id = sales.customer_id
+group by customers.customer_city;
+
+
+
+
+============   theoretical:  using rank function ========= 
+
+select employee , salary, department,
+ RANK() OVER(PARTITION BY department ORDER BY salary DESC) as rank_by_salary
+from employees;
+
+
+create table emp(
+    id int not null AUTO_INCREMENT,
+    employee_name varchar(255) not null,
+    PRIMARY KEY(id)
+);
+
+insert into emp(employee_name) values("Alice");
+insert into emp(employee_name) values("Bob");
+insert into emp(employee_name) values("John");
+insert into emp(employee_name) values("Larry");
+insert into emp(employee_name) values("Segrey");
+
+create table access_log(
+    date_time datetime,
+    location varchar(32),
+    id int not null,
+    PRIMARY KEY(date_time),
+    FOREIGN KEY(id) REFERENCES employee(id)
+  );
+
+insert into access_log(date_time, location, id) values("2026-04-06 20:00:00" , "Entrance", 1);
+insert into access_log(date_time, location, id) values("2026-04-06 21:30:00" , "Gold Vault", 3);
+insert into access_log(date_time, location, id) values("2026-04-06 23:00:00" , "Gold Vault", 2);
+insert into access_log(date_time, location, id) values("2026-04-07 02:00:00" , "Entrance", 4);
+
+
+select access_log_data.employee_name
+from access_log_data INNER JOIN bank_statement
+ON access_log_data.emp_no = bank_statement.emp_no
+where bank statement.deposit_amout > (
+select avg(deposit_amount) from bank_statement
+);
+
+
+
 
