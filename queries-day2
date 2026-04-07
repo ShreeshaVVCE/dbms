@@ -1,0 +1,172 @@
+===  display products along with their category name ====
+
+select products.product , product_cat.product_cat from products INNER JOIN product_cat ON products.product_cat_id = product_cat.id;
+
+
+==== display product_cat, count products ====
+
+select product_cat.product_cat, count(*) as count_of_products 
+from product_cat INNER JOIN products 
+ON products.product_cat_id = product_cat.id 
+group by products.product_cat_id;
+
+
+==== displays laptop and smartphones with ====
+
+
+select product_cat.product_cat, count(products.product_cat_id) as count_of_products 
+from product_cat LEFT JOIN products 
+ON products.product_cat_id = product_cat.id 
+group by products.product_cat_id;
+
+
+=== create and insert into suppliers and stocks ===
+
+create table suppliers(
+id int not null auto_increment,
+supplier_name varchar(255) not null,
+product_id int not null,
+primary key(id),
+foreign key(product_id) references products(id)
+);
+
+insert into suppliers(supplier_name,product_id) 
+,,,, values("Apple",1), 
+,,,, values("Samsung Electronics",2)
+,,,, values("BBK",3)
+,,,, values("Oppo",4)
+,,,, values("BBK",5);
+
+
+=== stocks ====
+
+create table stocks(
+id int not null auto_increment,
+product_id int not null,
+supplier_id int not null,
+purchase_price decimal(15,2),
+purchase_qty int not null,
+primary key(id),
+foreign key(product_id) references products(id),
+foreign key(supplier_id) references supplier(id));
+
+
+insert into stocks(product_id,	supplier_id, 	purchase_price,	purchase_qty) values(1,1,90000,10);
+insert into stocks(product_id,	supplier_id, 	purchase_price,	purchase_qty) values(2,2,111000,7);
+insert into stocks(product_id,	supplier_id, 	purchase_price,	purchase_qty) values(3,3,50000,5);
+insert into stocks(product_id,	supplier_id, 	purchase_price,	purchase_qty) values(4,4,65000,10);
+insert into stocks(product_id,	supplier_id, 	purchase_price,	purchase_qty) values(5,5,30000,4);
+
+
+
+=== display product name , supplier name , total value in stock  ===
+
+select products.product, suppliers.supplier_name, (stocks.purchase_qty*stocks.purchase_price) as TOTAL_VALUE
+from products INNER JOIN stocks 
+ON products.id = stocks.product_id
+INNER JOIN suppliers 
+on suppliers.id=stocks.supplier_id;
+
+
+
+==== product_cat | total_purchase_qty ====
+
+
+on products.product_cat_id = product_cat.id
+INNER JOIN stocks
+ON stocks.product_id = products.id
+group by product_cat.id
+
+
+
+======= discount_percentage depends on 
+if purchase_price > 50k -> 10%
+if purchase_price <= 50k and > 20k -> 5%
+if purchase_price <= 20k -> 1%  =======
+
+===============common table expression=====================
+
+
+with discount_table as (
+	select products.product , stocks.purchase_price,
+	case
+	when stocks.purchase_price > 50000 then 10
+	when stocks.purchase_price <=50000 and stocks.purchase_price > 20000 then 5
+	else 1
+	end as discount_percentage
+	from products inner join stocks
+	on products.id = stocks.product_id
+)
+select product, purchase_price, discount_percentage, 
+(purchase_price - (purchase_price * discount_percentage /100)) as price_after_discount
+from discount_table;
+
+
+
+
+
+========= display max purchased product cat name in terms of qty ======
+================only product cat name should be displayed=============
+
+
+with total_stocks as (
+select product_cat.product_cat, sum(stocks.purchase_qty) as total
+from products inner join product_cat
+on products.product_cat_id = product_cat.id
+inner join stocks
+on stocks.product_id = products.id
+group by product_cat.id
+)
+select product_cat from total_stocks
+order by total DESC
+limit 1;
+
+
+
+
+===== customer table and values ========
+
+
+create table customers
+(
+    id int not null AUTO_INCREMENT,
+    customer varchar(255) not null,
+    customer_city varchar(255) not null,
+    PRIMARY KEY(id)
+);
+insert into customers(customer,customer_city) values("PERSON_A","MYSURU");
+insert into customers(customer,customer_city) values("PERSON_B","MYSURU");
+insert into customers(customer,customer_city) values("PERSON_C","BENGALURU");
+insert into customers(customer,customer_city) values("PERSON_E","DUBAI");
+
+
+================= sales table and values ================
+
+create table sales(
+    id int not null AUTO_INCREMENT,
+    customer_id int not null,
+    order_date date,
+    product_id int not null,
+    order_qty int not null,
+    order_price decimal(15,2) not null,
+    PRIMARY KEY(id),
+    FOREIGN KEY(customer_id) REFERENCES customers(id),
+    FOREIGN KEY(product_id) REFERENCES products(id)
+);
+
+insert into sales(customer_id , order_date , product_id , order_qty , order_price) values(1,"2026-03-15",2,2,90000);
+insert into sales(customer_id , order_date , product_id , order_qty , order_price) values(1,"2025-05-01",1,4,80000);
+insert into sales(customer_id , order_date , product_id , order_qty , order_price) values(2,"2024-08-25",4,1,34000);
+insert into sales(customer_id , order_date , product_id , order_qty , order_price) values(3,"2026-04-30",2,1,100000);
+insert into sales(customer_id , order_date , product_id , order_qty , order_price) values(4,"2026-10-30",2,1,100000);
+insert into sales(customer_id , order_date , product_id , order_qty , order_price) values(1,"2025-03-28",1,8,77000);
+
+
+======= display total iphones sales in march month=======
+
+
+select sum(sales.order_qty * sales.order_price) as total_iphone_sales
+from products inner join sales
+on products.id = sales.product_id
+where products.product = 'IPhone' and (sales.order_date BETWEEN '2025-03-01' and '2025-03-31') or (sales.order_date BETWEEN '2026-03-01' and '2026-03-31');
+
